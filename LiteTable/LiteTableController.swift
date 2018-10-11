@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  LiteTableController.swift
 //  LiteTable
 //
 //  Created by Yaxin Cheng on 2018-10-10.
@@ -8,20 +8,14 @@
 
 import Cocoa
 
-class ViewController: NSViewController {
-
+class LiteTableController: NSViewController {
+  
   override func viewDidLoad() {
     super.viewDidLoad()
 
     // Do any additional setup after loading the view.
   }
-
-  override var representedObject: Any? {
-    didSet {
-    // Update the view, if already loaded.
-    }
-  }
-
-
+  
+  
 }
 

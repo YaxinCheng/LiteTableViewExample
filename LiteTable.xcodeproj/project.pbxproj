@@ -8,19 +8,29 @@
 
 /* Begin PBXBuildFile section */
 		14257A19216EA280008BE752 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A18216EA280008BE752 /* AppDelegate.swift */; };
-		14257A1B216EA280008BE752 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A1A216EA280008BE752 /* ViewController.swift */; };
+		14257A1B216EA280008BE752 /* LiteTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A1A216EA280008BE752 /* LiteTableController.swift */; };
 		14257A1D216EA282008BE752 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14257A1C216EA282008BE752 /* Assets.xcassets */; };
 		14257A20216EA282008BE752 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14257A1E216EA282008BE752 /* Main.storyboard */; };
+		14257A29216EA305008BE752 /* LiteTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A28216EA305008BE752 /* LiteTableView.swift */; };
+		14257A2B216EA3E5008BE752 /* LiteTableProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A2A216EA3E5008BE752 /* LiteTableProtocols.swift */; };
+		14257A2D216EA482008BE752 /* Deque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A2C216EA482008BE752 /* Deque.swift */; };
+		14257A2F216EC57A008BE752 /* LiteTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A2E216EC57A008BE752 /* LiteTableCell.swift */; };
+		14257A31216EE5A1008BE752 /* DequeIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A30216EE5A1008BE752 /* DequeIterator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		14257A15216EA280008BE752 /* LiteTable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiteTable.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14257A18216EA280008BE752 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		14257A1A216EA280008BE752 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		14257A1A216EA280008BE752 /* LiteTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteTableController.swift; sourceTree = "<group>"; };
 		14257A1C216EA282008BE752 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		14257A1F216EA282008BE752 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		14257A21216EA282008BE752 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14257A22216EA282008BE752 /* LiteTable.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiteTable.entitlements; sourceTree = "<group>"; };
+		14257A28216EA305008BE752 /* LiteTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteTableView.swift; sourceTree = "<group>"; };
+		14257A2A216EA3E5008BE752 /* LiteTableProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteTableProtocols.swift; sourceTree = "<group>"; };
+		14257A2C216EA482008BE752 /* Deque.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deque.swift; sourceTree = "<group>"; };
+		14257A2E216EC57A008BE752 /* LiteTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteTableCell.swift; sourceTree = "<group>"; };
+		14257A30216EE5A1008BE752 /* DequeIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DequeIterator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +64,12 @@
 			isa = PBXGroup;
 			children = (
 				14257A18216EA280008BE752 /* AppDelegate.swift */,
-				14257A1A216EA280008BE752 /* ViewController.swift */,
+				14257A1A216EA280008BE752 /* LiteTableController.swift */,
+				14257A2A216EA3E5008BE752 /* LiteTableProtocols.swift */,
+				14257A2E216EC57A008BE752 /* LiteTableCell.swift */,
+				14257A28216EA305008BE752 /* LiteTableView.swift */,
+				14257A2C216EA482008BE752 /* Deque.swift */,
+				14257A30216EE5A1008BE752 /* DequeIterator.swift */,
 				14257A1C216EA282008BE752 /* Assets.xcassets */,
 				14257A1E216EA282008BE752 /* Main.storyboard */,
 				14257A21216EA282008BE752 /* Info.plist */,
@@ -133,8 +148,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14257A1B216EA280008BE752 /* ViewController.swift in Sources */,
+				14257A31216EE5A1008BE752 /* DequeIterator.swift in Sources */,
+				14257A2F216EC57A008BE752 /* LiteTableCell.swift in Sources */,
+				14257A29216EA305008BE752 /* LiteTableView.swift in Sources */,
+				14257A1B216EA280008BE752 /* LiteTableController.swift in Sources */,
 				14257A19216EA280008BE752 /* AppDelegate.swift in Sources */,
+				14257A2D216EA482008BE752 /* Deque.swift in Sources */,
+				14257A2B216EA3E5008BE752 /* LiteTableProtocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
