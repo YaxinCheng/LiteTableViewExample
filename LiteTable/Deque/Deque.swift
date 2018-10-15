@@ -9,8 +9,11 @@
 import Foundation
 
 struct Deque<T>: Sequence {
+  
+  weak var delegate: DequeDelegate?
+  
   func makeIterator() -> Deque<T>.Iterator {
-    return iterator
+    return Iterator(beginNode: head)
   }
   
   final class Node<T>: CustomStringConvertible {
@@ -33,12 +36,10 @@ struct Deque<T>: Sequence {
   var last: Node<T>? { return tail }
   private let semaphore = DispatchSemaphore(value: 1)
   var count: Int = 0
-  let limit: Int
-  private var iterator: DequeIterator<T>!
   typealias Iterator = DequeIterator<T>
   
-  init(limit: Int) {
-    self.limit = limit
+  init(_ delegate: DequeDelegate? = nil) {
+    self.delegate = delegate
   }
   
   mutating func appendHead(_ value: T) {
@@ -53,10 +54,6 @@ struct Deque<T>: Sequence {
       tail = node
     }
     count += 1
-    if count > limit {
-      removeTailAsync()
-    }
-    iterator = DequeIterator(beginNode: head)
     semaphore.signal()
   }
   
@@ -72,10 +69,6 @@ struct Deque<T>: Sequence {
       tail = node
     }
     count += 1
-    if count > limit {
-      removeHeadAsync()
-    }
-    iterator = DequeIterator(beginNode: head)
     semaphore.signal()
   }
   
@@ -113,6 +106,14 @@ struct Deque<T>: Sequence {
   mutating func removeTail() {
     semaphore.wait()
     removeTailAsync()
+    semaphore.signal()
+  }
+  
+  mutating func removeAll() {
+    semaphore.wait()
+    for _ in 0 ..< count {
+      removeHeadAsync()
+    }
     semaphore.signal()
   }
 }
