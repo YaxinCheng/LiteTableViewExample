@@ -9,9 +9,6 @@
 import Foundation
 
 struct Deque<T>: Sequence {
-  
-  weak var delegate: DequeDelegate?
-  
   func makeIterator() -> Deque<T>.Iterator {
     return Iterator(beginNode: head)
   }
@@ -37,12 +34,11 @@ struct Deque<T>: Sequence {
   private let semaphore = DispatchSemaphore(value: 1)
   var count: Int = 0
   typealias Iterator = DequeIterator<T>
-  
-  init(_ delegate: DequeDelegate? = nil) {
-    self.delegate = delegate
+  var isEmpty: Bool {
+    return count == 0
   }
   
-  mutating func appendHead(_ value: T) {
+  mutating func appendFirst(_ value: T) {
     semaphore.wait()
     let node = Node(value)
     if head != nil {
@@ -57,7 +53,7 @@ struct Deque<T>: Sequence {
     semaphore.signal()
   }
   
-  mutating func appendTail(_ value: T) {
+  mutating func appendLast(_ value: T) {
     semaphore.wait()
     let node = Node(value)
     if tail != nil {
@@ -72,47 +68,56 @@ struct Deque<T>: Sequence {
     semaphore.signal()
   }
   
-  private mutating func removeHeadAsync() {
-    guard head != nil else { return }
+  private mutating func removeFirstAsync() -> T? {
+    guard head != nil else { return nil }
     let next = head?.next
     head?.next = nil
+    let value = head?.content
     head = next
     count -= 1
+    return value
   }
   
-  mutating func removeHead() {
+  mutating func removeFirst() -> T? {
     semaphore.wait()
-    removeHeadAsync()
+    let value = removeFirstAsync()
     semaphore.signal()
+    return value
   }
   
-  private mutating func removeTailAsync() {
+  private mutating func removeLastAsync() -> T? {
+    let value: T?
     if tail == nil {
       head = nil
+      value = nil
     } else {
       if tail === head {
+        value = tail?.content
         tail = nil
         head = nil
       } else {
         let prev = tail?.prev
+        value = tail?.content
         tail?.next = nil
         prev?.next = nil
         tail = prev
       }
     }
     count -= 1
+    return value
   }
   
-  mutating func removeTail() {
+  mutating func removeLast() -> T? {
     semaphore.wait()
-    removeTailAsync()
+    let value = removeLastAsync()
     semaphore.signal()
+    return value
   }
   
   mutating func removeAll() {
     semaphore.wait()
     for _ in 0 ..< count {
-      removeHeadAsync()
+      _ = removeFirstAsync()
     }
     semaphore.signal()
   }

@@ -13,6 +13,9 @@ public class LiteTableView: NSStackView {
   public weak var liteDataSource: LiteTableDataSource?
   private var displayDeque: Deque<LiteTableCell>
   private let extraSupplyment = 4
+  private var registeredNibs: [NSUserInterfaceItemIdentifier: NSNib] = [:]
+  private var registeredClasses: [NSUserInterfaceItemIdentifier: LiteTableCell.Type] = [:]
+  private var reuseQueues: [NSUserInterfaceItemIdentifier: Deque<LiteTableCell>] = [:]
   
   enum Position {
     case top
@@ -23,7 +26,6 @@ public class LiteTableView: NSStackView {
     displayDeque = Deque<LiteTableCell>()
     
     super.init(coder: decoder)
-    displayDeque.delegate = self
   }
   
   public func reload() {
@@ -32,25 +34,38 @@ public class LiteTableView: NSStackView {
     let itemCount = liteDataSource?.itemCount ?? 0
     for index in 0 ..< min(threshold + extraSupplyment, itemCount) {
       guard let cell = liteDataSource?.prepareCell(at: index) else { break }
-      displayDeque.appendTail(cell)
+      displayDeque.appendLast(cell)
     }
   }
-}
-
-extension LiteTableView: DequeDelegate {
-  func headAdded(_ element: Any) {
-    addView((element as! LiteTableCell).view, in: .top)
+  
+  public func register(nib: NSNib, withIdentifier identifier: NSUserInterfaceItemIdentifier) {
+    registeredNibs[identifier] = nib
   }
   
-  func headRemoved(_ element: Any) {
-//    Should be removed from superview automatically
+  public func register(class: LiteTableCell.Type, withIdentifier identifier: NSUserInterfaceItemIdentifier) {
+    registeredClasses[identifier] = `class`
   }
   
-  func tailAdded(_ element: Any) {
-    addView((element as! LiteTableCell).view, in: .bottom)
+  public func dequeueCell(withIdentifier identifier: NSUserInterfaceItemIdentifier) -> LiteTableCell {
+    if reuseQueues[identifier] == nil { reuseQueues[identifier] = Deque<LiteTableCell>() }
+    if reuseQueues[identifier]!.isEmpty {
+      let cell: LiteTableCell
+      if let nib = registeredNibs[identifier] {
+        cell = load(fromNib: nib)
+      } else if let `class` = registeredClasses[identifier] {
+        cell = `class`.init()
+      } else { fatalError("Unregistered identifier") }
+      return cell
+    } else {
+      return reuseQueues[identifier]!.removeFirst()!
+    }
   }
   
-  func tailRemoved(_ element: Any) {
-//    Should be removed from superview automatically
+  private func load(fromNib nib: NSNib) -> LiteTableCell {
+    var viewObjects: NSArray?
+    guard nib.instantiate(withOwner: self, topLevelObjects: &viewObjects) else {
+      fatalError("Nib cannot be instantiated")
+    }
+    return (viewObjects!.first { $0 is LiteTableCell } as! LiteTableCell)
   }
 }
