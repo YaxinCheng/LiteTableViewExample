@@ -9,7 +9,16 @@
 import Cocoa
 
 public class LiteTableCell: NSViewController {
+  
   deinit {
     view.removeFromSuperview()
+  }
+  
+  private(set) var highlighted: Bool = false
+  
+  func highlightToggle() {
+    highlighted = !highlighted
+    let colour: NSColor = highlighted ? .controlAccentColor : .clear
+    view.layer?.backgroundColor = colour.cgColor
   }
 }

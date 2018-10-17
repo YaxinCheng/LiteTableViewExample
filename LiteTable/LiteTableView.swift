@@ -11,11 +11,16 @@ import Cocoa
 public class LiteTableView: NSStackView {
   public weak var liteDelegate: LiteTableDelegate?
   public weak var liteDataSource: LiteTableDataSource?
-  private var displayDeque: Deque<LiteTableCell>
+  private var displayDeque: Deque<LiteTableCell> = []
   private let extraSupplyment = 4
   private var registeredNibs: [NSUserInterfaceItemIdentifier: NSNib] = [:]
   private var registeredClasses: [NSUserInterfaceItemIdentifier: LiteTableCell.Type] = [:]
   private var reuseQueues: [NSUserInterfaceItemIdentifier: Deque<LiteTableCell>] = [:]
+  private var keyboardMonitor: Any?
+  private(set) var highlightedCell: LiteTableCell?
+  private lazy var currentCell: Deque<LiteTableCell>.Iterator = {
+    return displayDeque.makeIterator()
+  }()
   
   enum Position {
     case top
@@ -23,11 +28,30 @@ public class LiteTableView: NSStackView {
   }
   
   public required init?(coder decoder: NSCoder) {
-    displayDeque = Deque<LiteTableCell>()
-    
     super.init(coder: decoder)
-    distribution = .fillEqually
+    setUp()
+  }
+  
+  public override init(frame frameRect: NSRect) {
+    super.init(frame: frameRect)
+    setUp()
+  }
+  
+  private func setUp() {
+    distribution = .fill
     spacing = 0
+    detachesHiddenViews = true
+    orientation = .vertical
+    keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyUp) { [weak self] in
+      self?.keyUp(with: $0)
+      return $0
+    }
+  }
+  
+  deinit {
+    guard keyboardMonitor != nil else { return }
+    NSEvent.removeMonitor(keyboardMonitor!)
+    keyboardMonitor = nil
   }
   
   public func reload() {
@@ -47,6 +71,20 @@ public class LiteTableView: NSStackView {
   
   public func register(class: LiteTableCell.Type, withIdentifier identifier: NSUserInterfaceItemIdentifier) {
     registeredClasses[identifier] = `class`
+  }
+  
+  public override func keyUp(with event: NSEvent) {
+    switch event.keyCode {
+    case 125:// down
+      highlightedCell?.highlightToggle()
+      highlightedCell = currentCell.next() ?? highlightedCell
+    case 126: // up
+      highlightedCell?.highlightToggle()
+      highlightedCell = currentCell.previous()
+    default:
+      super.keyUp(with: event)
+    }
+    highlightedCell?.highlightToggle()
   }
   
   public func dequeueCell(withIdentifier identifier: NSUserInterfaceItemIdentifier) -> LiteTableCell {
