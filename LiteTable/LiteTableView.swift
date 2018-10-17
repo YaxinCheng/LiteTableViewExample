@@ -26,15 +26,18 @@ public class LiteTableView: NSStackView {
     displayDeque = Deque<LiteTableCell>()
     
     super.init(coder: decoder)
+    distribution = .fillEqually
+    spacing = 0
   }
   
   public func reload() {
     if displayDeque.count > 0 { displayDeque.removeAll() }
-    let threshold = liteDelegate?.reuseThreshold ?? -extraSupplyment
-    let itemCount = liteDataSource?.itemCount ?? 0
+    let threshold = liteDelegate?.cellReuseThreshold(self) ?? -extraSupplyment
+    let itemCount = liteDataSource?.numberOfCells(self) ?? 0
     for index in 0 ..< min(threshold + extraSupplyment, itemCount) {
-      guard let cell = liteDataSource?.prepareCell(at: index) else { break }
+      guard let cell = liteDataSource?.prepareCell(self, at: index) else { break }
       displayDeque.appendLast(cell)
+      addView(cell.view, in: .top)
     }
   }
   
@@ -55,6 +58,10 @@ public class LiteTableView: NSStackView {
       } else if let `class` = registeredClasses[identifier] {
         cell = `class`.init()
       } else { fatalError("Unregistered identifier") }
+      NSLayoutConstraint.activate([
+      cell.view.widthAnchor.constraint(equalToConstant: bounds.width),
+      cell.view.heightAnchor.constraint(equalToConstant: liteDataSource?.cellHeight(self) ?? 0)
+        ])
       return cell
     } else {
       return reuseQueues[identifier]!.removeFirst()!

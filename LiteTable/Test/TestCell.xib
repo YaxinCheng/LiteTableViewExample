@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="TestCell" customModule="LiteTable" customModuleProvider="target">
+            <connections>
+                <outlet property="numberLabel" destination="cD0-uo-TW9" id="fwC-LC-Pu4"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="17"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cD0-uo-TW9">
+                    <rect key="frame" x="-2" y="0.0" width="484" height="17"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Label" id="a57-8A-Oxp">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="cD0-uo-TW9" firstAttribute="centerY" secondItem="Hz6-mo-xeY" secondAttribute="centerY" id="0DX-dD-c3Z"/>
+                <constraint firstAttribute="trailing" secondItem="cD0-uo-TW9" secondAttribute="trailing" id="9zy-A8-KjP"/>
+                <constraint firstItem="cD0-uo-TW9" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" id="YHg-QC-Zp5"/>
+            </constraints>
+        </customView>
+        <viewController nibName="TestCell" id="dPm-fW-L6B" customClass="TestCell" customModule="LiteTable" customModuleProvider="target">
+            <connections>
+                <outlet property="numberLabel" destination="cD0-uo-TW9" id="lo8-79-EEp"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="pvi-Zf-r5l"/>
+            </connections>
+        </viewController>
+    </objects>
+</document>

@@ -16,6 +16,9 @@
 		14257A2D216EA482008BE752 /* Deque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A2C216EA482008BE752 /* Deque.swift */; };
 		14257A2F216EC57A008BE752 /* LiteTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A2E216EC57A008BE752 /* LiteTableCell.swift */; };
 		14257A31216EE5A1008BE752 /* DequeIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14257A30216EE5A1008BE752 /* DequeIterator.swift */; };
+		14E72EAF2176D2C600FA41F8 /* NSUserInterfaceItemIdentifier+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E72EAE2176D2C600FA41F8 /* NSUserInterfaceItemIdentifier+Extension.swift */; };
+		14E72EB32176D35600FA41F8 /* TestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E72EB12176D35600FA41F8 /* TestCell.swift */; };
+		14E72EB42176D35600FA41F8 /* TestCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14E72EB22176D35600FA41F8 /* TestCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,9 @@
 		14257A2C216EA482008BE752 /* Deque.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deque.swift; sourceTree = "<group>"; };
 		14257A2E216EC57A008BE752 /* LiteTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteTableCell.swift; sourceTree = "<group>"; };
 		14257A30216EE5A1008BE752 /* DequeIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DequeIterator.swift; sourceTree = "<group>"; };
+		14E72EAE2176D2C600FA41F8 /* NSUserInterfaceItemIdentifier+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSUserInterfaceItemIdentifier+Extension.swift"; sourceTree = "<group>"; };
+		14E72EB12176D35600FA41F8 /* TestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCell.swift; sourceTree = "<group>"; };
+		14E72EB22176D35600FA41F8 /* TestCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +74,7 @@
 				14257A2A216EA3E5008BE752 /* LiteTableProtocols.swift */,
 				14257A2E216EC57A008BE752 /* LiteTableCell.swift */,
 				14257A28216EA305008BE752 /* LiteTableView.swift */,
+				14E72EB02176D2D200FA41F8 /* Test */,
 				14E70DFE217410FA00413C13 /* Deque */,
 				14257A1C216EA282008BE752 /* Assets.xcassets */,
 				14257A1E216EA282008BE752 /* Main.storyboard */,
@@ -84,6 +91,16 @@
 				14257A30216EE5A1008BE752 /* DequeIterator.swift */,
 			);
 			path = Deque;
+			sourceTree = "<group>";
+		};
+		14E72EB02176D2D200FA41F8 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				14E72EAE2176D2C600FA41F8 /* NSUserInterfaceItemIdentifier+Extension.swift */,
+				14E72EB12176D35600FA41F8 /* TestCell.swift */,
+				14E72EB22176D35600FA41F8 /* TestCell.xib */,
+			);
+			path = Test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,6 +163,7 @@
 			files = (
 				14257A1D216EA282008BE752 /* Assets.xcassets in Resources */,
 				14257A20216EA282008BE752 /* Main.storyboard in Resources */,
+				14E72EB42176D35600FA41F8 /* TestCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,6 +177,8 @@
 				14257A31216EE5A1008BE752 /* DequeIterator.swift in Sources */,
 				14257A2F216EC57A008BE752 /* LiteTableCell.swift in Sources */,
 				14257A29216EA305008BE752 /* LiteTableView.swift in Sources */,
+				14E72EAF2176D2C600FA41F8 /* NSUserInterfaceItemIdentifier+Extension.swift in Sources */,
+				14E72EB32176D35600FA41F8 /* TestCell.swift in Sources */,
 				14257A1B216EA280008BE752 /* LiteTableController.swift in Sources */,
 				14257A19216EA280008BE752 /* AppDelegate.swift in Sources */,
 				14257A2D216EA482008BE752 /* Deque.swift in Sources */,

@@ -27,6 +27,7 @@ struct Deque<T> {
   private weak var tail: Node<T>? = nil
   var first: T? { return head?.content }
   var last: T? { return tail?.content }
+  
   private let semaphore: DispatchSemaphore
   var count: Int
   

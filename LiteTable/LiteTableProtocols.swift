@@ -9,11 +9,11 @@
 import Foundation
 
 public protocol LiteTableDelegate: class {
-  var reuseThreshold: Int { get }
+  func cellReuseThreshold(_ tableView: LiteTableView) -> Int
 }
 
 public protocol LiteTableDataSource: class {
-  var itemCount: Int { get }
-  var cellHeight: CGFloat { get }
-  func prepareCell(at index: Int) -> LiteTableCell
+  func numberOfCells(_ tableView: LiteTableView) -> Int
+  func cellHeight(_ tableView: LiteTableView) -> CGFloat
+  func prepareCell(_ tableView: LiteTableView, at index: Int) -> LiteTableCell
 }
