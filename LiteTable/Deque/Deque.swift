@@ -8,11 +8,7 @@
 
 import Foundation
 
-struct Deque<T>: Sequence {
-  func makeIterator() -> Deque<T>.Iterator {
-    return Iterator(beginNode: head)
-  }
-  
+struct Deque<T> {
   final class Node<T>: CustomStringConvertible {
     let content: T
     var next: Node<T>? = nil
@@ -29,13 +25,14 @@ struct Deque<T>: Sequence {
   
   private var head: Node<T>? = nil
   private weak var tail: Node<T>? = nil
-  var first: Node<T>? { return head }
-  var last: Node<T>? { return tail }
-  private let semaphore = DispatchSemaphore(value: 1)
-  var count: Int = 0
-  typealias Iterator = DequeIterator<T>
-  var isEmpty: Bool {
-    return count == 0
+  var first: T? { return head?.content }
+  var last: T? { return tail?.content }
+  private let semaphore: DispatchSemaphore
+  var count: Int
+  
+  init() {
+    count = 0
+    semaphore = DispatchSemaphore(value: 1)
   }
   
   mutating func appendFirst(_ value: T) {
@@ -120,5 +117,42 @@ struct Deque<T>: Sequence {
       _ = removeFirstAsync()
     }
     semaphore.signal()
+  }
+}
+
+extension Deque: Collection {
+  func index(after i: Int) -> Int {
+    return i + 1
+  }
+  
+  subscript(position: Int) -> T {
+    guard position >= startIndex, position < endIndex else { fatalError("Index out of range") }
+    for (index, value) in self.enumerated() {
+      if index == position { return value }
+    }
+    fatalError("Wrong index")
+  }
+  
+  var startIndex: Int {
+    return 0
+  }
+  
+  var endIndex: Int {
+    return count
+  }
+}
+
+extension Deque: Sequence {
+  func makeIterator() -> DequeIterator<T> {
+    return Iterator(beginNode: head)
+  }
+}
+
+extension Deque: ExpressibleByArrayLiteral {
+  init(arrayLiteral elements: T...) {
+    self.init()
+    for element in elements {
+      appendLast(element)
+    }
   }
 }
