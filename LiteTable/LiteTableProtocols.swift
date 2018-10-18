@@ -6,13 +6,14 @@
 //  Copyright © 2018 Yaxin Cheng. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 
-public protocol LiteTableDelegate: class {
-  func cellReuseThreshold(_ tableView: LiteTableView) -> Int
+@objc public protocol LiteTableDelegate {
+  @objc optional func keyPressed(_ event: NSEvent, cell: LiteTableCell)
 }
 
-public protocol LiteTableDataSource: class {
+@objc public protocol LiteTableDataSource {
+  func cellReuseThreshold(_ tableView: LiteTableView) -> Int
   func numberOfCells(_ tableView: LiteTableView) -> Int
   func cellHeight(_ tableView: LiteTableView) -> CGFloat
   func prepareCell(_ tableView: LiteTableView, at index: Int) -> LiteTableCell

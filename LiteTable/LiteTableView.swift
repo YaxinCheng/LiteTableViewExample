@@ -21,11 +21,7 @@ public class LiteTableView: NSStackView {
     return displayDeque.makeIterator()
   }()
   private var currentIndex: Int = -1
-  
-  enum Position {
-    case top
-    case bottom
-  }
+  public var allowedKeyCodes: Set<UInt16> = [125, 126]
   
   public required init?(coder decoder: NSCoder) {
     super.init(coder: decoder)
@@ -40,8 +36,8 @@ public class LiteTableView: NSStackView {
   private func setUp() {
     distribution = .fill
     spacing = 0
-    detachesHiddenViews = true
     orientation = .vertical
+    alignment = .centerX
     keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyUp) { [weak self] in
       self?.keyUp(with: $0)
       return $0
@@ -56,7 +52,7 @@ public class LiteTableView: NSStackView {
   
   public func reload() {
     if displayDeque.count > 0 { displayDeque.removeAll() }
-    let threshold = liteDelegate?.cellReuseThreshold(self) ?? 0
+    let threshold = liteDataSource?.cellReuseThreshold(self) ?? 0
     let itemCount = liteDataSource?.numberOfCells(self) ?? 0
     for index in 0 ..< min(threshold, itemCount) {
       guard let cell = liteDataSource?.prepareCell(self, at: index) else { break }
@@ -75,13 +71,19 @@ public class LiteTableView: NSStackView {
   
   public override func keyUp(with event: NSEvent) {
     switch event.keyCode {
-    case 125:// down
-      moveDown()
-    case 126: // up
-      moveUp()
-    default:
-      super.keyUp(with: event)
+    case 125: moveDown()// down
+    case 126: moveUp() // up key
+    default: super.keyUp(with: event)
     }
+    if let cell = highlightedCell,
+      allowedKeyCodes.contains(event.keyCode) {
+      liteDelegate?.keyPressed?(event, cell: cell)
+    }
+  }
+  
+  public override func performKeyEquivalent(with event: NSEvent) -> Bool {
+    if allowedKeyCodes.contains(event.keyCode) { return true }
+    else { return super.performKeyEquivalent(with: event) }
   }
   
   public func dequeueCell(withIdentifier identifier: NSUserInterfaceItemIdentifier) -> LiteTableCell {
