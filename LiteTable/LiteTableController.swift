@@ -30,11 +30,11 @@ class LiteTableController: NSViewController {
 
 extension LiteTableController: LiteTableDelegate, LiteTableDataSource {
   func cellReuseThreshold(_ tableView: LiteTableView) -> Int {
-    return 10
+    return 3
   }
   
   func numberOfCells(_ tableView: LiteTableView) -> Int {
-    return 20
+    return dataSource.count
   }
   
   func cellHeight(_ tableView: LiteTableView) -> CGFloat {

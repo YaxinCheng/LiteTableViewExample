@@ -32,7 +32,7 @@
                 <constraint firstItem="cD0-uo-TW9" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" id="YHg-QC-Zp5"/>
             </constraints>
         </customView>
-        <viewController nibName="TestCell" id="dPm-fW-L6B" customClass="TestCell" customModule="LiteTable" customModuleProvider="target">
+        <viewController nibName="TestCell" identifier="test" id="dPm-fW-L6B" customClass="TestCell" customModule="LiteTable" customModuleProvider="target">
             <connections>
                 <outlet property="numberLabel" destination="cD0-uo-TW9" id="lo8-79-EEp"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="pvi-Zf-r5l"/>
