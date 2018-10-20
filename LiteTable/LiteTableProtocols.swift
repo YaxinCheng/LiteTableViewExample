@@ -10,6 +10,7 @@ import Cocoa
 
 @objc public protocol LiteTableDelegate {
   @objc optional func keyPressed(_ event: NSEvent, cell: LiteTableCell)
+  @objc optional func viewDidScroll(_ tableView: LiteTableView)
 }
 
 @objc public protocol LiteTableDataSource {

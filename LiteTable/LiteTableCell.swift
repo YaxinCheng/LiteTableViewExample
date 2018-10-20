@@ -8,17 +8,24 @@
 
 import Cocoa
 
-public class LiteTableCell: NSViewController {
+public class LiteTableCell: NSCollectionViewItem {
   
   deinit {
     view.removeFromSuperview()
   }
   
   private(set) var highlighted: Bool = false
+  var highlightedColour: NSColor {
+    if #available(OSX 10.14, *) {
+      return .controlAccentColor
+    } else {
+      return .blue
+    }
+  }
   
   func highlightToggle() {
     highlighted = !highlighted
-    let colour: NSColor = highlighted ? .controlAccentColor : .clear
+    let colour: NSColor = highlighted ? highlightedColour : .clear
     view.layer?.backgroundColor = colour.cgColor
   }
 }

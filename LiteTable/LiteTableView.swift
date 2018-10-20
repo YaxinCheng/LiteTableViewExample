@@ -22,9 +22,13 @@ public class LiteTableView: NSStackView {
   }()
   private var currentIndex: Int = -1
   public var allowedKeyCodes: Set<UInt16> = [125, 126]
+  public var visibleCells: [LiteTableCell] {
+    return Array(displayDeque)
+  }
   
   public required init?(coder decoder: NSCoder) {
     super.init(coder: decoder)
+    translatesAutoresizingMaskIntoConstraints = false
     setUp()
   }
   
@@ -38,10 +42,18 @@ public class LiteTableView: NSStackView {
     spacing = 0
     orientation = .vertical
     alignment = .centerX
+    edgeInsets = NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    
     keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyUp) { [weak self] in
       self?.keyUp(with: $0)
       return $0
     }
+  }
+  
+  private func reset() {
+    currentIndex = -1
+    highlightedCell = nil
+    currentCell = displayDeque.makeIterator()
   }
   
   deinit {
@@ -51,14 +63,22 @@ public class LiteTableView: NSStackView {
   }
   
   public func reload() {
-    if displayDeque.count > 0 { displayDeque.removeAll() }
+    if displayDeque.count > 0 {
+      for cell in displayDeque {
+        reuseQueues[cell.identifier!]?.appendFirst(cell)
+      }
+      displayDeque.removeAll()
+      subviews.removeAll()
+    }
     let threshold = liteDataSource?.cellReuseThreshold(self) ?? 0
     let itemCount = liteDataSource?.numberOfCells(self) ?? 0
-    for index in 0 ..< min(threshold, itemCount) {
+    let displayCount = min(threshold, itemCount)
+    for index in 0 ..< displayCount {
       guard let cell = liteDataSource?.prepareCell(self, at: index) else { break }
       displayDeque.appendLast(cell)
       addView(cell.view, in: .top)
     }
+    reset()
   }
   
   public func register(nib: NSNib, withIdentifier identifier: NSUserInterfaceItemIdentifier) {
@@ -96,9 +116,10 @@ public class LiteTableView: NSStackView {
         cell = `class`.init()
       } else { fatalError("Unregistered identifier") }
       NSLayoutConstraint.activate([
-      cell.view.widthAnchor.constraint(equalToConstant: bounds.width),
-      cell.view.heightAnchor.constraint(equalToConstant: liteDataSource?.cellHeight(self) ?? 0)
+        cell.view.widthAnchor.constraint(equalToConstant: bounds.width),
+        cell.view.heightAnchor.constraint(equalToConstant: liteDataSource?.cellHeight(self) ?? 0)
         ])
+      cell.prepareForReuse()
       return cell
     } else {
       return reuseQueues[identifier]!.removeFirst()!
@@ -125,13 +146,14 @@ public class LiteTableView: NSStackView {
       }
       guard
         let newCell = liteDataSource?.prepareCell(self, at: currentIndex + 1)
-      else { return }
+        else { return }
       currentIndex += 1
       displayDeque.appendLast(newCell)
       _ = currentCell.next()
       addView(newCell.view, in: .bottom)
       highlightedCell?.highlightToggle()
       highlightedCell = newCell
+      liteDelegate?.viewDidScroll?(self)
     } else { return }
     highlightedCell?.highlightToggle()
   }
@@ -149,7 +171,7 @@ public class LiteTableView: NSStackView {
       }
       guard
         let newCell = liteDataSource?.prepareCell(self, at: currentIndex - 1)
-      else { return }
+        else { return }
       currentIndex -= 1
       displayDeque.appendFirst(newCell)
       _ = currentCell.previous()
@@ -157,11 +179,10 @@ public class LiteTableView: NSStackView {
       highlightedCell?.highlightToggle()
       highlightedCell = newCell
       highlightedCell?.highlightToggle()
+      liteDelegate?.viewDidScroll?(self)
     } else {
-      currentIndex = -1
-      currentCell = displayDeque.makeIterator()
       highlightedCell?.highlightToggle()
-      highlightedCell = nil
+      reset()
     }
   }
 }

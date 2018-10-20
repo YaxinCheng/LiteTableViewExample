@@ -36,9 +36,8 @@ struct Deque<T> {
     semaphore = DispatchSemaphore(value: 1)
   }
   
-  mutating func appendFirst(_ value: T) {
-    semaphore.wait()
-    let node = Node(value)
+  private mutating func appendFirstAsync(_ newElement: T) {
+    let node = Node(newElement)
     if head != nil {
       node.next = head
       head?.prev = node
@@ -48,12 +47,24 @@ struct Deque<T> {
       tail = node
     }
     count += 1
+  }
+  
+  mutating func appendFirst(_ newElement: T) {
+    semaphore.wait()
+    appendFirstAsync(newElement)
     semaphore.signal()
   }
   
-  mutating func appendLast(_ value: T) {
+  mutating func appendFirst<V: Sequence>(contentOf sequence: V) where V.Element == T {
     semaphore.wait()
-    let node = Node(value)
+    for element in sequence {
+      appendFirstAsync(element)
+    }
+    semaphore.signal()
+  }
+  
+  private mutating func appendLastAsync(_ newElement: T) {
+    let node = Node(newElement)
     if tail != nil {
       tail?.next = node
       node.prev = tail
@@ -63,6 +74,19 @@ struct Deque<T> {
       tail = node
     }
     count += 1
+  }
+  
+  mutating func appendLast(_ newElement: T) {
+    semaphore.wait()
+    appendLastAsync(newElement)
+    semaphore.signal()
+  }
+  
+  mutating func appendLast<V: Sequence>(contentOf sequence: V) where V.Element == T {
+    semaphore.wait()
+    for element in sequence {
+      appendLastAsync(element)
+    }
     semaphore.signal()
   }
   
