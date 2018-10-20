@@ -20,6 +20,7 @@ public class LiteTableView: NSStackView {
   private lazy var currentCell: Deque<LiteTableCell>.Iterator = {
     return displayDeque.makeIterator()
   }()
+  private var resetCurrFlag: Bool = false
   private var currentIndex: Int = -1
   public var allowedKeyCodes: Set<UInt16> = [125, 126]
   public var visibleCells: [LiteTableCell] {
@@ -52,7 +53,10 @@ public class LiteTableView: NSStackView {
   
   private func reset() {
     currentIndex = -1
-    highlightedCell = nil
+    if highlightedCell?.highlighted == true {
+      highlightedCell?.highlightToggle()
+      highlightedCell = nil
+    }
     currentCell = displayDeque.makeIterator()
   }
   
@@ -70,6 +74,7 @@ public class LiteTableView: NSStackView {
       displayDeque.removeAll()
       subviews.removeAll()
     }
+    reset()
     let threshold = liteDataSource?.cellReuseThreshold(self) ?? 0
     let itemCount = liteDataSource?.numberOfCells(self) ?? 0
     let displayCount = min(threshold, itemCount)
@@ -78,7 +83,7 @@ public class LiteTableView: NSStackView {
       displayDeque.appendLast(cell)
       addView(cell.view, in: .top)
     }
-    reset()
+    resetCurrFlag = true
   }
   
   public func register(nib: NSNib, withIdentifier identifier: NSUserInterfaceItemIdentifier) {
@@ -90,6 +95,10 @@ public class LiteTableView: NSStackView {
   }
   
   public override func keyUp(with event: NSEvent) {
+    if resetCurrFlag == true {
+      currentCell = displayDeque.makeIterator()
+      resetCurrFlag = false
+    }
     switch event.keyCode {
     case 125: moveDown()// down
     case 126: moveUp() // up key
@@ -181,7 +190,6 @@ public class LiteTableView: NSStackView {
       highlightedCell?.highlightToggle()
       liteDelegate?.viewDidScroll?(self)
     } else {
-      highlightedCell?.highlightToggle()
       reset()
     }
   }
