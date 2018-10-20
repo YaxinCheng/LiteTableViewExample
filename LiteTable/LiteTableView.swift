@@ -15,8 +15,20 @@ public class LiteTableView: NSStackView {
   private var registeredNibs: [NSUserInterfaceItemIdentifier: NSNib] = [:]
   private var registeredClasses: [NSUserInterfaceItemIdentifier: LiteTableCell.Type] = [:]
   private var reuseQueues: [NSUserInterfaceItemIdentifier: Deque<LiteTableCell>] = [:]
+  
   private var keyboardMonitor: Any?
-  private(set) var highlightedCell: LiteTableCell?
+  
+  private(set) var highlightedCell: LiteTableCell? {
+    willSet {
+      if highlightedCell?.highlighted == true {
+        highlightedCell?.highlightToggle()
+      }
+    } didSet {
+      if highlightedCell?.highlighted == false {
+        highlightedCell?.highlightToggle()
+      }
+    }
+  }
   private lazy var currentCell: Deque<LiteTableCell>.Iterator = {
     return displayDeque.makeIterator()
   }()
@@ -45,18 +57,15 @@ public class LiteTableView: NSStackView {
     alignment = .centerX
     edgeInsets = NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     
-    keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyUp) { [weak self] in
-      self?.keyUp(with: $0)
+    keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] in
+      self?.keyDown(with: $0)
       return $0
     }
   }
   
   private func reset() {
     currentIndex = -1
-    if highlightedCell?.highlighted == true {
-      highlightedCell?.highlightToggle()
-      highlightedCell = nil
-    }
+    highlightedCell = nil
     currentCell = displayDeque.makeIterator()
   }
   
@@ -94,20 +103,26 @@ public class LiteTableView: NSStackView {
     registeredClasses[identifier] = `class`
   }
   
-  public override func keyUp(with event: NSEvent) {
+  public override func keyDown(with event: NSEvent) {
     if resetCurrFlag == true {
       currentCell = displayDeque.makeIterator()
       resetCurrFlag = false
     }
-    switch event.keyCode {
-    case 125: moveDown()// down
-    case 126: moveUp() // up key
-    default: super.keyUp(with: event)
+    if event.keyCode == 125 {
+      moveDown()
+      liteDelegate?.keyPressed?(event)
+    } else if event.keyCode == 126 {
+      moveUp()
+      liteDelegate?.keyPressed?(event)
+    } else if allowedKeyCodes.contains(event.keyCode) {
+      liteDelegate?.keyPressed?(event)
+    } else {
+      super.keyUp(with: event)
     }
-    if let cell = highlightedCell,
-      allowedKeyCodes.contains(event.keyCode) {
-      liteDelegate?.keyPressed?(event, cell: cell)
-    }
+  }
+  
+  private func modifierChanged(with event: NSEvent) {
+    
   }
   
   public override func performKeyEquivalent(with event: NSEvent) -> Bool {
@@ -146,7 +161,6 @@ public class LiteTableView: NSStackView {
   private func moveDown() {
     if let nextCell = currentCell.next() {// Next view is on screen
       currentIndex += 1
-      highlightedCell?.highlightToggle()
       highlightedCell = nextCell
     } else if currentIndex + 1 < liteDataSource?.numberOfCells(self) ?? 0 {// Next view can be loaded
       if let top = displayDeque.removeFirst() {
@@ -160,19 +174,15 @@ public class LiteTableView: NSStackView {
       displayDeque.appendLast(newCell)
       _ = currentCell.next()
       addView(newCell.view, in: .bottom)
-      highlightedCell?.highlightToggle()
       highlightedCell = newCell
       liteDelegate?.viewDidScroll?(self)
     } else { return }
-    highlightedCell?.highlightToggle()
   }
   
   private func moveUp() {
     if let prevCell = currentCell.previous() {
       currentIndex -= 1
-      highlightedCell?.highlightToggle()
       highlightedCell = prevCell
-      highlightedCell?.highlightToggle()
     } else if currentIndex - 1 >= 0 {
       if let bottom = displayDeque.removeLast() {
         reuseQueues[bottom.identifier!, default: []].appendLast(bottom)
@@ -185,9 +195,7 @@ public class LiteTableView: NSStackView {
       displayDeque.appendFirst(newCell)
       _ = currentCell.previous()
       insertView(newCell.view, at: 0, in: .top) // Add view to the top
-      highlightedCell?.highlightToggle()
       highlightedCell = newCell
-      highlightedCell?.highlightToggle()
       liteDelegate?.viewDidScroll?(self)
     } else {
       reset()
