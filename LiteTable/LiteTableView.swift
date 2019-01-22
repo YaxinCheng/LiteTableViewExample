@@ -169,7 +169,7 @@ public class LiteTableView: NSStackView {
       }
       guard
         let newCell = liteDataSource?.prepareCell(self, at: currentIndex + 1)
-        else { return }
+      else { return }
       currentIndex += 1
       displayDeque.appendLast(newCell)
       _ = currentCell.next()
@@ -190,10 +190,11 @@ public class LiteTableView: NSStackView {
       }
       guard
         let newCell = liteDataSource?.prepareCell(self, at: currentIndex - 1)
-        else { return }
+      else { return }
       currentIndex -= 1
       displayDeque.appendFirst(newCell)
-      _ = currentCell.previous()
+      currentCell.beforeFirstNode = false
+      _ = currentCell.previous()// Stopped by the firstNode. Should move it above
       insertView(newCell.view, at: 0, in: .top) // Add view to the top
       highlightedCell = newCell
       liteDelegate?.viewDidScroll?(self)

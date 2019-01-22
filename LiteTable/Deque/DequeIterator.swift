@@ -11,16 +11,16 @@ import Foundation
 struct DequeIterator<T>: IteratorProtocol {
   typealias Element = T
   private var current: Deque<T>.Node<T>?
-  private var firstNode: Bool
+  var beforeFirstNode: Bool
   
   init(beginNode: Deque<T>.Node<T>?) {
     current = beginNode
-    firstNode = true
+    beforeFirstNode = true
   }
   
   mutating func next() -> T? {
-    if firstNode {
-      firstNode = false
+    if beforeFirstNode {
+      beforeFirstNode = false
       return current?.content
     } else {
       guard current?.next != nil else { return nil }
@@ -30,9 +30,9 @@ struct DequeIterator<T>: IteratorProtocol {
   }
   
   mutating func previous() -> T? {
-    if firstNode { return nil }
+    if beforeFirstNode { return nil }
     guard current?.prev != nil else {
-      firstNode = true
+      beforeFirstNode = true
       return nil
     }
     current = current?.prev
