@@ -109,20 +109,16 @@ public class LiteTableView: NSStackView {
       resetCurrFlag = false
     }
     if event.keyCode == 125 {
+      liteDelegate?.keyPressed?(event)
       moveDown()
-      liteDelegate?.keyPressed?(event)
     } else if event.keyCode == 126 {
-      moveUp()
       liteDelegate?.keyPressed?(event)
+      moveUp()
     } else if allowedKeyCodes.contains(event.keyCode) {
       liteDelegate?.keyPressed?(event)
     } else {
       super.keyUp(with: event)
     }
-  }
-  
-  private func modifierChanged(with event: NSEvent) {
-    
   }
   
   public override func performKeyEquivalent(with event: NSEvent) -> Bool {
@@ -193,7 +189,6 @@ public class LiteTableView: NSStackView {
       else { return }
       currentIndex -= 1
       displayDeque.appendFirst(newCell)
-      currentCell.beforeFirstNode = false
       _ = currentCell.previous()// Stopped by the firstNode. Should move it above
       insertView(newCell.view, at: 0, in: .top) // Add view to the top
       highlightedCell = newCell
